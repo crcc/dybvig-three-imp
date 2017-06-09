@@ -2,6 +2,10 @@
 (require "dybvig-macros.ss")
 (provide evaluate)
 
+;; x: Expression(Sexp)
+;; e: Compile-Time Environment
+;; next: CompiledExpression(Sexp)
+;; ->: CompiledExpression(Sexp)
 (define compile 
   (lambda (x e next)
     (cond
@@ -71,7 +75,7 @@
       [conti (x)
        (VM (continuation s) x e r s)]
       [nuate (s var)
-       (VM (car (lookup var e)) '(return) e r s)]
+       (VM (mcar (lookup var e)) '(return) e r s)]
       [frame (ret x)
        (VM a x e '() (call-frame ret e r s))]
       [argument (x)

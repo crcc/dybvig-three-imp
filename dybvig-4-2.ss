@@ -68,7 +68,7 @@
        (VM a x e r s)]
       [conti (x)
        (VM (continuation s) x e r s)]
-      [nuate (stack var)
+      [nuate (stack x)
        (VM a x e r (restore-stack stack))]
       [frame (ret x)
        (VM a x e '() (push ret (push e (push r s))))]
@@ -105,7 +105,8 @@
 
 (define continuation 
   (lambda (s)
-    (closure (list 'refer 0 0 (list 'nuate (save-stack s) '(return))) '())))
+    (closure (list 'refer (cons 0 0)
+                   (list 'nuate (save-stack s) '(return))) '())))
 
 (define save-stack
   (lambda (s)
@@ -113,7 +114,8 @@
       (let copy ([i 0])
         (unless (= i s)
           (vector-set! v i (vector-ref stack i))
-          (copy (+ i 1)))))))
+          (copy (+ i 1))))
+      v)))
 
 (define restore-stack
   (lambda (v)

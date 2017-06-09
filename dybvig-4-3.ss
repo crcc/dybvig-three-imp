@@ -102,7 +102,8 @@
       (let copy ([i 0])
         (unless (= i s)
           (vector-set! v i (vector-ref stack i))
-          (copy (+ i 1)))))))
+          (copy (+ i 1))))
+      v)))
 
 (define restore-stack
   (lambda (v)
@@ -125,5 +126,5 @@
 
 (define evaluate 
   (lambda (x)
-    (VM '() (compile x '() '(halt)) '() 0)))
+    (VM '() (compile x '() '(halt)) 0 0)))
 

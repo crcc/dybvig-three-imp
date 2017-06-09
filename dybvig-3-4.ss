@@ -2,6 +2,9 @@
 (require "dybvig-macros.ss")
 (provide evaluate)
 
+;; (compile '(+ 1 2) '(halt))
+;; x: Expression(Sexp)
+;; next: CompiledExpression(Sexp)
 (define compile 
   (lambda (x next)
     (cond
@@ -39,6 +42,12 @@
       [else
        (list 'constant x next)])))
 
+;; a: Accumulator, Value
+;; x: CompiledExpression(Sexp)
+;; e: Environment, (list-of (pair-of (list-of symbol) (mutable-list-of Sexp)))
+;; r: Control-Stack(Arguments), (mutable-list-of Value)
+;; s: Call-Frame(Continuation), (Frame x e r s)
+;; ->: Value
 (define VM 
   (lambda (a x e r s)
     (record-case x
@@ -57,7 +66,7 @@
       [conti (x)
        (VM (continuation s) x e r s)]
       [nuate (s var)
-       (VM (car (lookup var e)) '(return) e r s)]
+       (VM (mcar (lookup var e)) '(return) e r s)]
       [frame (ret x)
        (VM a x e '() (call-frame ret e r s))]
       [argument (x)
